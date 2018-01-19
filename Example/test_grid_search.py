@@ -1,5 +1,5 @@
-from model import Model
-from population_based_training import Worker, train, exploit, step, eval
+from Example.model import Model
+from Example.population_based_training import Worker, train, step, eval
 
 def train_worker(id, population, child):
     model = Model()
@@ -12,9 +12,6 @@ def train_worker(id, population, child):
         params = step(model, params, hyperparams)
         performance = eval(model, params, hyperparams)
         params_store.append(params)
-
-        if i % 8 == 0:
-            _, params = exploit(hyperparams, params, performance, population)
         population[id] = Worker(id=id, params=params, hyperparams=hyperparams, performance=performance)
 
     # Send parameters to the other end of the connection
@@ -26,7 +23,7 @@ def main():
         Worker(id=1, params=[0.9, 0.9], hyperparams=[0.0, 1.0], performance=0)
     ]
 
-    train(train_worker, workers, 'Exploit only')
+    train(train_worker, workers, 'Grid Search')
 
 if __name__ == '__main__':
    main()

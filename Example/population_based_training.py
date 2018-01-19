@@ -1,5 +1,5 @@
 from multiprocessing import Process, Pipe, Manager
-from meshgrid import plot
+from Example.meshgrid import plot
 import random
 
 class Worker:

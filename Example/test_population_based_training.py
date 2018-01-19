@@ -1,5 +1,5 @@
-from model import Model
-from population_based_training import Worker, train, exploit, step, eval, explore
+from Example.model import Model
+from Example.population_based_training import Worker, train, exploit, step, eval, explore
 
 import numpy as np
 
@@ -22,7 +22,7 @@ def train_worker(id, population, child):
                 """
                 best_params != params means that we have found a better model.
                 In this example we don't pass the hyperparameters of the best model to the explore function because we
-                don't want to analyse the effect on both model separately.
+                want to analyse the effect on both model separately.
                 """
 
                 hyperparams, params = explore(hyperparams, best_params, performance, population)
