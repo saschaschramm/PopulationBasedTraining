@@ -1,8 +1,14 @@
 from Reinforce.utilities import *
-from Reinforce.policies import *
 
 class Model:
-    def __init__(self, policy, batch_size, num_envs, observation_space, action_space, learning_rate):
+    def __init__(self, params):
+        batch_size = params['batch_size']
+        num_envs = params['num_envs']
+        policy = params["policy"]
+        observation_space = params["observation_space"]
+        action_space = params["action_space"]
+        learning_rate = params["learning_rate"]
+
         self.session = tf.Session()
         self.actions = tf.placeholder(tf.uint8, [batch_size * num_envs], name="action")
         self.rewards = tf.placeholder(tf.float32, [batch_size * num_envs], name="rewards")
@@ -43,7 +49,6 @@ class Model:
     def load(self, id):
         saver = tf.train.Saver()
         saver.restore(self.session, "Saver/model_{}.ckpt".format(id))
-
 
     def loss_value(self, inputs, rewards, actions):
         return self.session.run(self.loss, feed_dict={self.model_train.inputs: inputs,

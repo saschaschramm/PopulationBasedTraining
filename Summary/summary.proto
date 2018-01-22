@@ -1,0 +1,12 @@
+/* # protoc --python_out=. summary.proto */
+
+syntax = "proto3";
+
+message Episode {
+  int64 id = 1;
+  float performance = 2;
+}
+
+message Summary {
+  repeated Episode episodes = 1;
+}

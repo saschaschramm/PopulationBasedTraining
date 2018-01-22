@@ -29,3 +29,10 @@ We assume that we can't observe this function. Instead we maximize a surrogate f
 ![alt text](Figures/Explore_only.png)
 
 ![alt text](Figures/Grid_Search.png)
+
+## Reinforce
+
+Performance of the Reinforce algorithm with Population Based Training (5 Workers):
+
+
+![alt text](Figures/summary.png)
