@@ -10,11 +10,17 @@ class TestSaver(unittest.TestCase):
         rewards = [1.0]
         observations = [[[0.1, 0.3], [0.4, 0.9]]]
         actions = [1.0]
-        batch_size = 1
-        policy = PolicyFullyConnected
 
-        model = Model(policy=policy, batch_size=batch_size, num_envs=1, observation_space=[2, 2], action_space=2,
-                      learning_rate=0.01)
+        model_params = {
+            "policy": PolicyFullyConnected,
+            "num_envs": 1,
+            "observation_space": [2,2],
+            "action_space": 2,
+            "learning_rate": 0.01,
+            "batch_size": 1
+        }
+
+        model = Model(model_params)
 
         print("***********************")
         print("Save:")

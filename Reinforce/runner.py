@@ -15,11 +15,12 @@ class Runner():
         self.average_episodic_performance = 0
         self.episode = 0
 
-        self.performance_num_episode = runner_params["performance_num_episode"]
+        self.performance_num_episodes = runner_params["performance_num_episodes"]
         self.batch_size = model_params["batch_size"]
         self.save_summary_steps = runner_params["save_summary_steps"]
 
         self.file_writer = summary.FileWriter(runner_params["summary_log_dir"])
+        self.step_count = 0
 
     def env_step(self, action):
         observation, reward, done, _ = self.env.step(action)
@@ -28,21 +29,25 @@ class Runner():
         return observation, reward, done
 
     def evaluate(self, reward, done):
+        self.step_count += 1
+
         self.episodic_rewards.append(reward)
         if done:
             self.episodic_performance.append(sum(self.episodic_rewards) / len(self.episodic_rewards))
             self.episodic_rewards = []
-
-            if (self.episode % self.save_summary_steps) == 0 and (self.episode != 0):
-                #print("{}   {}".format(self.episode, self.average_episodic_performance))
-                self.file_writer.add_summary(self.worker_id, self.episode, self.average_episodic_performance)
             self.episode += 1
 
-        if len(self.episodic_performance) == self.performance_num_episode:
-            self.average_episodic_performance = sum(self.episodic_performance)/self.performance_num_episode
+        # summary
+        if (self.step_count % self.save_summary_steps) == 0:
+            #print("{}   {}".format(self.episode, self.average_episodic_performance))
+            self.file_writer.add_summary(self.worker_id, self.step_count, self.average_episodic_performance)
+
+        # average episodic performance
+        if len(self.episodic_performance) == self.performance_num_episodes:
+            self.average_episodic_performance = sum(self.episodic_performance)/self.performance_num_episodes
             self.episodic_performance.pop(0)
 
-    def step(self):
+    def run(self):
         batch_observations = []
         batch_rewards = []
         batch_actions = []
@@ -59,4 +64,5 @@ class Runner():
 
             if len(batch_observations) == self.batch_size:
                 discounted_rewards = discount(batch_rewards, batch_dones, self.discount_rate)
-                return batch_observations, discounted_rewards, batch_actions
+                self.model.train(batch_observations, discounted_rewards, batch_actions)
+                break
